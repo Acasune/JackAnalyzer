@@ -26,7 +26,7 @@ public class JackTokenizer {
   ).collect(Collectors.toSet());
 
 
-  int currentPos = -1;
+  private int currentPos = -1;
 
   List<String> tokenized;
 
@@ -71,6 +71,13 @@ public class JackTokenizer {
     }
   }
 
+  public String getKeyword() throws Exception {
+    if (tokenType(this.tokenized.get(currentPos)) !=TokenType.KEY_WORD) {
+      throw new Exception("This token is not a keyword!!");
+    }
+    return this.tokenized.get(currentPos);
+  }
+
   public String getSymbol() throws Exception {
     if (tokenType(this.tokenized.get(currentPos)) !=TokenType.SYMBOL) {
       throw new Exception("This token is not a symbol!!");
@@ -93,10 +100,14 @@ public class JackTokenizer {
   }
 
   public String getStringVal() throws Exception {
-    if (tokenType(this.tokenized.get(currentPos)) !=TokenType.INT_CONST) {
+    if (tokenType(this.tokenized.get(currentPos)) !=TokenType.STRING_CONST) {
       throw new Exception("This token is not a string value!!");
     }
     return this.tokenized.get(currentPos);
+  }
+
+  public String getTagType() {
+    return tokenType(this.tokenized.get(currentPos)).getTag();
   }
 
 

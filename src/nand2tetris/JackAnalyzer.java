@@ -3,8 +3,6 @@ package nand2tetris;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicIntegerArray;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -55,12 +53,4 @@ public class JackAnalyzer {
 
   }
 
-  static String commentTrimmer(String line) {
-    Matcher matcher = commentPattern.matcher(line);
-    if (!matcher.find()) {
-      return line;
-    }
-    return matcher.group(1);
-
-  }
 }
