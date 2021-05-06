@@ -73,21 +73,21 @@ public class JackTokenizer {
 
   public String getKeyword() throws Exception {
     if (tokenType(this.tokenized.get(currentPos)) !=TokenType.KEY_WORD) {
-      throw new Exception("This token is not a keyword!!");
+      throw new Exception(String.format("This token [%s] is not a keyword !!",tokenized.get(currentPos)));
     }
     return this.tokenized.get(currentPos);
   }
 
   public String getSymbol() throws Exception {
     if (tokenType(this.tokenized.get(currentPos)) !=TokenType.SYMBOL) {
-      throw new Exception("This token is not a symbol!!");
+      throw new Exception(String.format("This token [%s] is not a symbol !!",tokenized.get(currentPos)));
     }
     return this.tokenized.get(currentPos);
   }
 
   public String getIdentifier() throws Exception {
     if (tokenType(this.tokenized.get(currentPos)) !=TokenType.IDENTIFIER) {
-      throw new Exception("This token is not an identifier!!");
+      throw new Exception(String.format("This token [%s] is not an identifier !!",tokenized.get(currentPos)));
     }
     return this.tokenized.get(currentPos);
   }
@@ -101,9 +101,13 @@ public class JackTokenizer {
 
   public String getStringVal() throws Exception {
     if (tokenType(this.tokenized.get(currentPos)) !=TokenType.STRING_CONST) {
-      throw new Exception("This token is not a string value!!");
+      throw new Exception(String.format("This token [%s] is not a string value!!",tokenized.get(currentPos)));
     }
     return this.tokenized.get(currentPos);
+  }
+
+  public TokenType getTokenType() {
+    return tokenType(this.tokenized.get(currentPos));
   }
 
   public String getTagType() {

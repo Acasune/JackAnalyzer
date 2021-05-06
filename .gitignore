@@ -2,5 +2,5 @@
 .idea/
 *.jack
 out/
-*.log
+*.xml
 .DS_store
