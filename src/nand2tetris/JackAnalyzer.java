@@ -13,6 +13,8 @@ public class JackAnalyzer {
 
   public static void main(String[] args) throws Exception {
 
+    JackTokenizer tokenizer;
+    CompilationEngine engine = new CompilationEngine();
     List<File> targetFiles = new ArrayList<>();
 
     if (args.length != 1) {
@@ -33,21 +35,20 @@ public class JackAnalyzer {
       targetFiles.add(new File(inputFile));
     }
 
-    String tokenizedCode = "";
 
     for (File targetFile : targetFiles) {
-      JackTokenizer tokenizer;
       try (BufferedReader reader = new BufferedReader(new FileReader(targetFile))) {
         tokenizer = new JackTokenizer(reader.lines().collect(Collectors.toList()));
       }
-      try(BufferedWriter writer = new BufferedWriter(new FileWriter("output.log"))){
-        try {
-          writer.write(tokenizedCode);
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
 
-    }
+      try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.log"))) {
+
+        engine.setUp(tokenizer,writer);
+        engine.compileClass();
+
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
 
 
     }
