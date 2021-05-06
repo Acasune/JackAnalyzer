@@ -39,7 +39,7 @@ public class JackAnalyzer {
         tokenizer = new JackTokenizer(reader.lines().collect(Collectors.toList()));
       }
 
-      try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.xml"))) {
+      try (BufferedWriter writer = new BufferedWriter(new FileWriter(String.format("%s.xml",targetFile)))) {
 
         engine.setUp(tokenizer,writer);
         engine.compileClass();

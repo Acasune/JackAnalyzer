@@ -11,7 +11,10 @@ public class JackTokenizer {
 
   private static final Pattern symbolsPattern = Pattern.compile("([^\\{\\}\\(\\)\\[\\]\\.,;\\+\\-\\*\\/&\\|<>=~]*)([\\{\\}\\(\\)\\[\\]\\.,;\\+\\-\\*\\/&\\|<>=~])([^\\{\\}\\(\\)\\[\\]\\.,;\\+\\-\\*\\/&\\|<>=~]*)");
   private static final Pattern stringLiteralPattern = Pattern.compile("\".*?\"");
-  private static final Pattern commentPattern = Pattern.compile("(.*)(\\/\\/.*)");
+  private static final Pattern COMMENT_PATTERN_1 = Pattern.compile("(.*)(\\/\\/)(.*)");
+  private static final Pattern COMMENT_PATTERN_2 = Pattern.compile("(.*)(\\/\\*\\*)(.*)");
+//  private static final Pattern COMMENT_PATTERN_3 = Pattern.compile("(.*)(\\*)(.*)");
+  private static final Pattern COMMENT_PATTERN_3 = Pattern.compile("(.*)(\\*\\/)(.*)");
   private static final Pattern isDigit = Pattern.compile("^\\d+$");
 
   private static final Set<String> keywordsSet = Stream.of(
@@ -115,12 +118,27 @@ public class JackTokenizer {
   }
 
 
+  // Private method
+
   private String preProcessor(String line) {
-    Matcher matcher = commentPattern.matcher(line);
-    if (!matcher.find()) {
-      return line;
+    line=line.trim();
+    if (line.startsWith("*")) {
+      return "";
     }
-    return matcher.group(1).trim();
+    Matcher matcher1 = COMMENT_PATTERN_1.matcher(line);
+    if (matcher1.find()) {
+      line = matcher1.group(1).trim();
+    }
+    Matcher matcher2 = COMMENT_PATTERN_2.matcher(line);
+    if (matcher2.find()) {
+      line = matcher2.group(1).trim();
+    }
+    Matcher matcher3 = COMMENT_PATTERN_3.matcher(line);
+    if (matcher3.find()) {
+      line = matcher3.group(1).trim();
+    }
+
+    return line;
   }
 
 

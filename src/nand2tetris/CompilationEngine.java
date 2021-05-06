@@ -54,22 +54,22 @@ public class CompilationEngine {
 
   public void compileClassVarDec() throws Exception {
     String tag = "classVarDec";
-    preTermWriter(tag); // <classVarDec>
 
     while (this.jt.getTokenType() == TokenType.KEY_WORD && classVarDecSet.contains(this.jt.getKeyword())) {
+      preTermWriter(tag); // <classVarDec>
       keywordWriter(); // <keyword> static/field <keyword>
-      keywordWriter(); // <identifier> $Var.type <identifier>
+      returnTypeWriter(); // <identifier> $Var.type <identifier>
       identifierWriter(); // <identifier> $Var.name1 </identifier>
 
       while (this.jt.getTokenType() == TokenType.SYMBOL && ",".equals(this.jt.getSymbol())) {
-        keywordWriter(); // <symbol> , <symbol>
+        symbolWriter(); // <symbol> , <symbol>
         identifierWriter(); // <identifier> $Var.name2 </identifier>
       }
       symbolWriter(); // <symbol> ; </symbol>
-
+      postTermWriter(tag); // </classVarDec>
     }
 
-    postTermWriter(tag); // </classVarDec>
+
 
   }
 
@@ -108,10 +108,11 @@ public class CompilationEngine {
     String tag = "parameterList";
     preTermWriter(tag); // <parameterList>
 
-    while (!(this.jt.getTokenType() == TokenType.SYMBOL) || !(")".equals(this.jt.getSymbol()))) {
+    while (this.jt.getTokenType() != TokenType.SYMBOL || !")".equals(this.jt.getSymbol())) {
       returnTypeWriter();
-      symbolWriter();
-      while (this.jt.getTokenType() == TokenType.SYMBOL || ",".equals(this.jt.getSymbol())) {
+      identifierWriter();
+      while (this.jt.getTokenType() == TokenType.SYMBOL && ",".equals(this.jt.getSymbol())) {
+        symbolWriter(); // ,
         returnTypeWriter();
         identifierWriter();
       }
@@ -198,12 +199,10 @@ public class CompilationEngine {
     symbolWriter();
     if (this.jt.getTokenType() == TokenType.KEY_WORD && "else".equals(this.jt.getKeyword())) {
       keywordWriter(); //else
-      symbolWriter();
-      compileExpression();
-      symbolWriter();
-      symbolWriter();
+      symbolWriter(); // {
       compileStatements();
-      symbolWriter();
+      symbolWriter(); // }
+
     }
     postTermWriter(tag);
   }
@@ -256,7 +255,7 @@ public class CompilationEngine {
     String tag = "expression";
     preTermWriter(tag);
     compileTerm();
-    if (this.jt.getTokenType() == TokenType.SYMBOL && opSet.contains(this.jt.getSymbol())) {
+    while (this.jt.getTokenType() == TokenType.SYMBOL && opSet.contains(this.jt.getSymbol())) {
       symbolWriter();
       compileTerm();
     }
@@ -267,17 +266,15 @@ public class CompilationEngine {
     String tag = "term";
     preTermWriter(tag);
 
-    switch (this.jt.getTokenType()) {
-      case INT_CONST:
+    TokenType tt=this.jt.getTokenType();
+
+      if(tt==TokenType.INT_CONST) {
         intConstWriter();
-        break;
-      case STRING_CONST:
+      } else if (tt==TokenType.STRING_CONST) {
         stringConstWriter();
-        break;
-      case KEY_WORD:
+      } else if (tt==TokenType.KEY_WORD) {
         keywordWriter();
-        break;
-      case IDENTIFIER:
+      }  else if (tt==TokenType.IDENTIFIER) {
         identifierWriter();
         if (this.jt.getTokenType() == TokenType.SYMBOL && "[".equals(this.jt.getSymbol())) {
           symbolWriter();
@@ -294,18 +291,16 @@ public class CompilationEngine {
           compileExpressionList();
           symbolWriter();
         }
-        break;
-      case SYMBOL:
-        if (this.jt.getTokenType() == TokenType.SYMBOL || "(".equals(this.jt.getSymbol())) {
+      } else if (tt==TokenType.SYMBOL) {
+        if ("(".equals(this.jt.getSymbol())) {
           symbolWriter();
           compileExpression();
           symbolWriter();
-        } else if(this.jt.getTokenType() == TokenType.SYMBOL || unaryOpSet.contains(this.jt.getSymbol())) {
+        } else if(unaryOpSet.contains(this.jt.getSymbol())) {
           symbolWriter();
           compileTerm();
         }
-        break;
-    }
+      }
 
     postTermWriter(tag);
 
